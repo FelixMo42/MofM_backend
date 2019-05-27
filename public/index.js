@@ -5,7 +5,7 @@ const type = url.searchParams.get("type")
 let data = {}
 
 
-fetch(`http://localhost:3001/data/${type}/${id}.json`)
+fetch(`/data/${type}/${id}.json`)
     .then(response => response.json())
     .then(object => {
         data = object
@@ -17,15 +17,19 @@ fetch(`http://localhost:3001/data/${type}/${id}.json`)
         })
     })
 
+function goTo(type, id) {
+    window.location.href = `?type=${type}&&id=${id}`
+}
+
 function newObject(type) {
-    $.post(`http://localhost:3001/api/${type}`).done(id => {
-        window.location.href = `?type=${type}&&id=${id}`
+    $.post(`/api/${type}`).done(id => {
+        goTo(type,id)
     })
 }
 
 async function loadObjects() {
-    for (var type of ["map","player","skill","action","tile","structor"]) {
-        let response = await fetch(`http://localhost:3001/api/${type}`)
+    for (var type of ["map","player","skill","action","tile","structor","item"]) {
+        let response = await fetch(`/api/${type}`)
         let objects = await response.json()
 
         $("#objects").append(`
@@ -35,9 +39,10 @@ async function loadObjects() {
         for (let object in objects) {
             $("#objects").append(`
                 <input
-                    type='button'
+                    type="button"
                     style="width: 202px; display: block;"
-                    value='${objects[object]}'
+                    value="${objects[object]}"
+                    onclick="goTo('${type}','${object}')"
                 />
             `)
         }
@@ -61,7 +66,7 @@ function update(key) {
     let path = keys.join(".")
 
     $.ajax({
-        url: `http://localhost:3001/api/${type}/${id}/${path}`,
+        url: `/api/${type}/${id}/${path}`,
         type: "PUT",
         contentType: "application/json",
         data: JSON.stringify({
