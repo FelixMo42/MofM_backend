@@ -3,18 +3,48 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 
-const data = {}
-
 app.use(express.static('public'))
 app.use("/data", express.static('data'))
 
 app.use(bodyParser.json())
 
+// json managment
+
+function loadJSON(path) {
+    let contents = fs.readFileSync(path)
+    return JSON.parse(contents)
+}
+
+function saveJSON(path, object) {
+    let content = JSON.stringify(object)
+    return fs.writeFileSync(path, content)
+}
+
+// config managment
+
+function loadConfig(type) {
+    console.log(`loaded ${type} config`)
+
+    config[type] = loadJSON(`./data/${type}/config.json`)
+}
+
+function saveConfig(type) {
+    return saveJSON(`./data/${type}/config.json`, config[type])
+}
+
+function newId(type) {
+    config[type].id += 1
+    let id = config[type].id
+    saveConfig(type)
+    return id
+}
+
 // object managment
 
 function loadObject(type, id) {
-    let contents = fs.readFileSync(`./data/${type}/${id}.json`)
-    return JSON.parse(contents)
+    console.log(`loaded ${type} ${id}`)
+
+    return loadJSON(`./data/${type}/${id}.json`)
 }
 
 function getObject({type, id, key=""}) {
@@ -23,8 +53,6 @@ function getObject({type, id, key=""}) {
     }
     if (!(id in data[type])) {
         data[type][id] = loadObject(type, id)
-
-        console.log(`loaded ${type} ${id}`)
     }
 
     let object = data[type][id]
@@ -38,12 +66,32 @@ function getObject({type, id, key=""}) {
     return object
 }
 
-async function saveObject({type, id}) {
+function createObject({type}) {
+    let id = newId("map")
+    
+    fs.writeFileSync(
+        `./data/${type}/${id}.json`,
+        fs.readFileSync(`./data/${type}/template.json`)
+    )
+}
+
+function saveObject({type, id}) {
     let object = getObject({type, id})
 
     let content = JSON.stringify(object)
-    await fs.writeFileSync(`./data/${type}/${id}.json`, content)
+    fs.writeFileSync(`./data/${type}/${id}.json`, content)
 }
+// load data
+
+const data = {
+    map : {}
+}
+
+const config = {
+    map : {}
+}
+
+loadConfig("map")
 
 // api
 
@@ -58,11 +106,18 @@ app.put(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
         object[key] = request.body[key]
     }
 
-    saveObject(request.params).then( () => response.sendStatus(200) )
+    saveObject(request.params)
+    response.sendStatus(200)
+})
+
+app.post(["/api/:type"], (request, response) => {
+    createObject(request.params)
+
+    response.sendStatus(200)
 })
 
 // setup
 
 app.listen(3001, () => {
-    console.log("app deployed\n")
+    console.log("\n> app deployed\n")
 })

@@ -3,13 +3,10 @@
 
 <script>
     $.ajax({
-        url: "/api/map/0",
-        type: "PUT",
-        contentType: "application/json",
-        data: JSON.stringify({
-            name: "hi"
-        }),
-        success: () => {
-        }
+        url: "/api/map",
+        type: "POST",
+        contentType: "application/json"
+    }).done(data => {
+        console.log(data)
     })
 </script>

@@ -3,12 +3,15 @@
     <head>
         <title>MofM editor</title>
         <link rel="stylesheet" type="text/css" href="/style/main.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+        </script>
     </head>
     <body>
         <!-- form -->
         <form>
             <input type="text" name="id" id="id">
-            <input type="submit">
+            <input type="submit", value="get">
         </form>
         <hr/>
 
@@ -56,15 +59,22 @@
                 .then(response => response.json())
                 .then(data => {
                     for (let key in data) {
-                        console.log(key, data[key])
                         document.getElementById(key).value = data[key].toString()
                     }
                 }
             )
 
             function update(key) {
-                let value = document.getElementById(key).value
-                fetch(`http://localhost:3001/api/set/map/${id}/${key}/${value}`)
+                $.ajax({
+                    url: `http://localhost:3001/api/map/${id}`,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        [key]: document.getElementById(key).value
+                    })
+                }).done(data => {
+                    console.log(data)
+                })
             }
         </script>
     </body>
