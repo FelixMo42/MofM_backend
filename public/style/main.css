@@ -1,8 +1,83 @@
 body {
     background-color: #323232;
     color: white;
+    margin: 0px;
+}
+
+hr {
+    margin: 5px 0px;
 }
 
 .option {
     margin-bottom: 10px;
+}
+
+.grid {
+    display: flex;
+}
+
+.flex {
+    flex: 1;
+}
+
+.sidebar {
+    margin: 5px;
+    border-right: solid white;
+    padding-right: 10px;
+    font-size: 0;
+}
+
+.content {
+    margin: 5px;
+    flex: 1;
+    font-size: 0;
+}
+
+input[type=button] {
+    border-style: solid;
+}
+
+input[type=button]:hover {
+    border-color: aqua;
+    background-color: aqua;
+}
+
+input[type=button]:focus {
+    border-color: aqua;
+    background-color: aqua;
+    outline: none;
+}
+
+input[type=button]:disabled:hover {
+    border-color: buttonface;
+    background-color: buttonface;
+}
+
+input[type=text], input[type=number] {
+    display: block;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+label {
+    font: 15px Helvetica;
+    width: 100%;
+}
+
+.leftJointButton {
+    box-sizing: border-box;
+
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.centerJointButton {
+    box-sizing: border-box;
+}
+
+.rightJointButton {
+    box-sizing: border-box;
+
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }

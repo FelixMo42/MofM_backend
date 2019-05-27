@@ -11,13 +11,11 @@ app.use(bodyParser.json())
 // json managment
 
 function loadJSON(path) {
-    let contents = fs.readFileSync(path)
-    return JSON.parse(contents)
+    return JSON.parse(fs.readFileSync(path))
 }
 
 function saveJSON(path, object) {
-    let content = JSON.stringify(object)
-    return fs.writeFileSync(path, content)
+    return fs.writeFileSync(path, JSON.stringify(object))
 }
 
 // config managment
@@ -81,6 +79,7 @@ function saveObject({type, id}) {
     let content = JSON.stringify(object)
     fs.writeFileSync(`./data/${type}/${id}.json`, content)
 }
+
 // load data
 
 const data = {
@@ -91,7 +90,11 @@ const config = {
     map : {}
 }
 
+loadConfig("item")
 loadConfig("map")
+loadConfig("player")
+loadConfig("skill")
+loadConfig("structor")
 
 // api
 

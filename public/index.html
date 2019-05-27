@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MofM editor</title>
+        <link rel="stylesheet" type="text/css" href="/style/main.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+        </script>
+    </head>
+    <body>
+        <div class="grid">
+            <div class="sidebar">
+                <div class="grid">
+                    <input type="button" class="leftJointButton flex" value="objects">
+                    <input type="button" class="rightJointButton flex" value="settings"/>
+                </div>
+
+                <hr />
+
+                <div id="settings">
+                </div>
+            </div>
+            <div class="content">
+                <div class="grid">
+                    <input type="button" class="leftJointButton" value="thing1" />
+                    <input type="button" class="centerJointButton" value="thing2" />
+                    <input type="button" class="rightJointButton flex" disabled/>
+                </div>
+
+                <hr />
+            </div>
+        </div>
+
+        <!-- script -->
+        <script src="/index.js"> </script>
+    </body>
+</html>
