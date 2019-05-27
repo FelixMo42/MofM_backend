@@ -14,8 +14,14 @@ fetch(`http://localhost:3001/data/${type}/${id}.json`)
             dataType: 'script',
             success: () => {},
             async: true
-        });
+        })
     })
+
+function newObject(type) {
+    $.post(`http://localhost:3001/api/${type}`).done(id => {
+        window.location.href = `?type=${type}&&id=${id}`
+    })
+}
 
 async function loadObjects() {
     for (var type of ["map","player","skill","action","tile","structor"]) {
@@ -27,7 +33,6 @@ async function loadObjects() {
         `)
 
         for (let object in objects) {
-            
             $("#objects").append(`
                 <input
                     type='button'
@@ -35,7 +40,16 @@ async function loadObjects() {
                     value='${objects[object]}'
                 />
             `)
-        }   
+        }
+        
+        $("#objects").append(`
+            <input
+                type='button'
+                style="width: 202px; display: block;"
+                value="add new"
+                onclick="newObject('${type}')"
+            />
+        `)
     }
 }
 

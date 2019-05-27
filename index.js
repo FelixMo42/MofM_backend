@@ -65,12 +65,14 @@ function getObject({type, id, key=""}) {
 }
 
 function createObject({type}) {
-    let id = newId("map")
+    let id = newId(type)
     
     fs.writeFileSync(
         `./data/${type}/${id}.json`,
-        fs.readFileSync(`./data/${type}/template.json`)
+        fs.readFileSync(`./data/${type}/default.json`)
     )
+
+    return id
 }
 
 function saveObject({type, id}) {
@@ -133,9 +135,7 @@ app.put(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
 })
 
 app.post(["/api/:type"], (request, response) => {
-    createObject(request.params)
-
-    response.sendStatus(200)
+    response.send(createObject(request.params).toString())
 })
 
 // setup
