@@ -98,6 +98,25 @@ loadConfig("structor")
 
 // api
 
+app.get(["/api/:type"], (request, response) => {
+    fs.readdir(`./data/${request.params.type}`, (err, files) => {
+        var objects = {}
+
+        for (let index in files) {
+            let file = files[index]
+            if (file == "config.json") { continue }
+            let id = file.replace(".json","")
+            objects[file.replace(".json","")] = getObject({
+                type: request.params.type,
+                id: id,
+                key: "name"
+            })
+        }
+
+        response.send(JSON.stringify(objects))
+    })
+})
+
 app.get(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
     response.send(getObject(request.params))
 })

@@ -4,6 +4,7 @@ const type = url.searchParams.get("type")
 
 let data = {}
 
+
 fetch(`http://localhost:3001/data/${type}/${id}.json`)
     .then(response => response.json())
     .then(object => {
@@ -15,6 +16,30 @@ fetch(`http://localhost:3001/data/${type}/${id}.json`)
             async: true
         });
     })
+
+async function loadObjects() {
+    for (var type of ["map","player","skill","action","tile","structor"]) {
+        let response = await fetch(`http://localhost:3001/api/${type}`)
+        let objects = await response.json()
+
+        $("#objects").append(`
+            <p style="font: 14px helvetica; margin-bottom: 0px;">${type}</p>
+        `)
+
+        for (let object in objects) {
+            
+            $("#objects").append(`
+                <input
+                    type='button'
+                    style="width: 202px; display: block;"
+                    value='${objects[object]}'
+                />
+            `)
+        }   
+    }
+}
+
+loadObjects()
 
 function update(key) {
     let keys = key.split(".")
@@ -45,4 +70,20 @@ function addSetting(key, type) {
             onchange="update('${key}')"
         />
     `)
+}
+
+function goToSettings() {
+    $("#settings").show()
+    $("#objects").hide()
+
+    $("#objects_button").toggleClass("selected")
+    $("#settings_button").toggleClass("selected")
+}
+
+function goToObjects() {
+    $("#settings").hide()
+    $("#objects").show()
+
+    $("#objects_button").toggleClass("selected")
+    $("#settings_button").toggleClass("selected")
 }

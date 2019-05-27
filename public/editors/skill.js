@@ -1,0 +1,1 @@
+addSetting("name", "text")

@@ -42,7 +42,7 @@ input[type=button]:hover {
     background-color: aqua;
 }
 
-input[type=button]:focus {
+.selected, input[type=button]:focus {
     border-color: aqua;
     background-color: aqua;
     outline: none;
