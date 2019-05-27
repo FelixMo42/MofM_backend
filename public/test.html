@@ -1,0 +1,15 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+</script>
+
+<script>
+    $.ajax({
+        url: "/api/map/0",
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+            name: "hi"
+        }),
+        success: () => {
+        }
+    })
+</script>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MofM editor</title>
+        <link rel="stylesheet" type="text/css" href="/style/main.css">
+    </head>
+    <body>
+        <!-- form -->
+        <form>
+            <input type="text" name="id" id="id">
+            <input type="submit">
+        </form>
+        <hr/>
+
+        <!-- options -->
+        <div id="opts">
+            <div class="option">
+                <label for="name">name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    onchange="update('name')"
+                />
+            </div>
+
+            <div class="option">
+                <label for="width">width</label>
+                <input
+                    type="number"
+                    id="width"
+                    name="width"
+                    onchange="update('width')"
+                />
+            </div>
+            
+
+            <div class="option">
+                <label for="height">height</label>
+                <input
+                    type="number"
+                    id="height"
+                    name="height"
+                    onchange="update('height')"
+                />
+            </div>
+        </div>
+
+        <!-- script -->
+        <script>
+            let url = new URL(window.location.href)
+            let id = url.searchParams.get("id")
+            document.getElementById("id").value = id
+
+            fetch(`http://localhost:3001/data/map/${id}.json`)
+                .then(response => response.json())
+                .then(data => {
+                    for (let key in data) {
+                        console.log(key, data[key])
+                        document.getElementById(key).value = data[key].toString()
+                    }
+                }
+            )
+
+            function update(key) {
+                let value = document.getElementById(key).value
+                fetch(`http://localhost:3001/api/set/map/${id}/${key}/${value}`)
+            }
+        </script>
+    </body>
+</html>
