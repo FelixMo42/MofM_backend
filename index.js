@@ -96,7 +96,9 @@ loadConfig("item")
 loadConfig("map")
 loadConfig("player")
 loadConfig("skill")
+loadConfig("action")
 loadConfig("structor")
+loadConfig("tile")
 
 // api
 

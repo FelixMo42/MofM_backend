@@ -3,22 +3,26 @@ const id = url.searchParams.get("id")
 const type = url.searchParams.get("type")
 
 let data = {}
-
-
-fetch(`/data/${type}/${id}.json`)
-    .then(response => response.json())
-    .then(object => {
-        data = object
-        jQuery.ajax({
-            url: `/editors/${type}.js`,
-            dataType: 'script',
-            success: () => {},
-            async: true
-        })
-    })
+let list = {}
 
 function goTo(type, id) {
     window.location.href = `?type=${type}&&id=${id}`
+}
+
+function goToSettings() {
+    $("#settings").show()
+    $("#objects").hide()
+
+    $("#objects_button").toggleClass("selected")
+    $("#settings_button").toggleClass("selected")
+}
+
+function goToObjects() {
+    $("#settings").hide()
+    $("#objects").show()
+
+    $("#objects_button").toggleClass("selected")
+    $("#settings_button").toggleClass("selected")
 }
 
 function newObject(type) {
@@ -36,7 +40,11 @@ async function loadObjects() {
             <p style="font: 14px helvetica; margin-bottom: 0px;">${type}</p>
         `)
 
+        list[type] = {}
+
         for (let object in objects) {
+            list[type][object] = objects[object]
+
             $("#objects").append(`
                 <input
                     type="button"
@@ -58,8 +66,6 @@ async function loadObjects() {
     }
 }
 
-loadObjects()
-
 function update(key) {
     let keys = key.split(".")
     let value = keys.pop()
@@ -80,29 +86,44 @@ function update(key) {
 function addSetting(key, type) {
     let name = key.split(".").pop()
 
-    $("#settings").append(`
+    if (type == "text" || type == "number") {
+        return $("#settings").append(`
+            <label for=${key}>${name}</label>
+            <input
+                type="${type}"
+                name="${key}"
+                value="${data[key]}"
+                onchange="update('${key}')"
+            />
+        `)
+    }
+
+    return $("#settings").append(`
         <label for=${key}>${name}</label>
-        <input
-            type="${type}"
-            name="${key}"
-            value="${data[key]}"
-            onchange="update('${key}')"
-        />
-    `)
+        <select name="${key}" onchange="update('${key}')">
+            <option value="">None</option>
+            ${Object.keys(list[type]).map(id => (
+                `<option value="${id}">${list[type][id]}</option>`
+            )).join("")}
+        </select>
+    `)    
 }
 
-function goToSettings() {
-    $("#settings").show()
-    $("#objects").hide()
+// load data
 
-    $("#objects_button").toggleClass("selected")
-    $("#settings_button").toggleClass("selected")
+async function loadall() {
+    await loadObjects()
+    fetch(`/data/${type}/${id}.json`)
+        .then(response => response.json())
+        .then(object => {
+            data = object
+            jQuery.ajax({
+                url: `/editors/${type}.js`,
+                dataType: 'script',
+                success: () => {},
+                async: true
+            })
+        })
 }
 
-function goToObjects() {
-    $("#settings").hide()
-    $("#objects").show()
-
-    $("#objects_button").toggleClass("selected")
-    $("#settings_button").toggleClass("selected")
-}
+loadall()

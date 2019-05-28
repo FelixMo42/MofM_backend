@@ -64,6 +64,15 @@ label {
     width: 100%;
 }
 
+select {
+    width: 200px;
+    display: block;
+}
+
+option {
+    width: 200px;
+}
+
 .leftJointButton {
     box-sizing: border-box;
 
