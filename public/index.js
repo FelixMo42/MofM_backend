@@ -100,11 +100,20 @@ function addSetting(key, type) {
 
     return $("#settings").append(`
         <label for=${key}>${name}</label>
-        <select name="${key}" onchange="update('${key}')">
+        <select
+            name="${key}"
+            onchange="update('${key}')"
+            
+        >
             <option value="">None</option>
-            ${Object.keys(list[type]).map(id => (
-                `<option value="${id}">${list[type][id]}</option>`
-            )).join("")}
+            ${Object.keys(list[type]).map(id => `
+                <option
+                    value="${id}"
+                    ${data[key] == id ? "selected" : ""}
+                >
+                    ${list[type][id]}
+                </option>
+            `).join("")}
         </select>
     `)    
 }
