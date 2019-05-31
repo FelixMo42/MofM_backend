@@ -66,18 +66,22 @@ async function loadObjects() {
     }
 }
 
-function update(key) {
+function update(key, input) {
     let keys = key.split(".")
-    let value = keys.pop()
+    let name = keys.pop()
     let path = keys.join(".")
+
+    if (input == "checkbox") {
+        value = $(`[name=${key}]`).is(":checked")
+    } else {
+        value = $(`[name=${key}]`).val()
+    }
 
     $.ajax({
         url: `/api/${type}/${id}/${path}`,
         type: "PUT",
         contentType: "application/json",
-        data: JSON.stringify({
-            [value]: $(`[name=${key}]`).val()
-        })
+        data: JSON.stringify({[name]: value})
     }).done(data => {
         console.log(data)
     })
@@ -86,14 +90,26 @@ function update(key) {
 function addSetting(key, type) {
     let name = key.split(".").pop()
 
-    if (type == "text" || type == "number") {
+    if (type == "text" || type == "number" || type == "checkbox") {
         return $("#settings").append(`
             <label for=${key}>${name}</label>
             <input
                 type="${type}"
                 name="${key}"
                 value="${data[key]}"
-                onchange="update('${key}')"
+                onchange="update('${key}','${type}')"
+            />
+        `)
+    }
+
+    if (type == "checkbox") {
+        return $("#settings").append(`
+            <label for=${key}>${name}</label>
+            <input
+                type="${type}"
+                name="${key}"
+                value="${data[key]}"
+                onclick="update('${key}','${type}')"
             />
         `)
     }
