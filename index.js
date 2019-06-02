@@ -1,12 +1,15 @@
 const fs = require("fs")
 const bodyParser = require('body-parser')
 const express = require('express')
+const cors = require('cors')
 const app = express()
 
 app.use(express.static('public'))
 app.use("/data", express.static('data'))
 
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(cors())
 
 // json managment
 
@@ -117,12 +120,12 @@ app.get(["/api/:type"], (request, response) => {
             })
         }
 
-        response.send(JSON.stringify(objects))
+        response.status(200).send(objects)
     })
 })
 
 app.get(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
-    response.send(getObject(request.params))
+    response.status(200).send(getObject(request.params))
 })
 
 app.put(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
@@ -133,11 +136,11 @@ app.put(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
     }
 
     saveObject(request.params)
-    response.sendStatus(200)
+    response.status(200).sendStatus(200)
 })
 
 app.post(["/api/:type"], (request, response) => {
-    response.send(createObject(request.params).toString())
+    response.status(200).send(createObject(request.params))
 })
 
 // setup
