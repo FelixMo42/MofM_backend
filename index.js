@@ -135,12 +135,21 @@ app.put(["/api/:type/:id", "/api/:type/:id/:key"], (request, response) => {
         object[key] = request.body[key]
     }
 
+    if (Array.isArray(object)) {
+        let index = object.indexOf(null)
+
+        while (index >= 0) {
+            object.splice(index, 1)
+            index = object.indexOf(null)
+        }
+    }
+
     saveObject(request.params)
     response.status(200).sendStatus(200)
 })
 
 app.post(["/api/:type"], (request, response) => {
-    response.status(200).send(createObject(request.params))
+    response.status(200).send(createObject(request.params).toString())
 })
 
 // setup

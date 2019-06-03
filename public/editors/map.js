@@ -1,7 +1,9 @@
-addSetting("name", "text")
-addSetting("description", "text")
+const config = {
+    "name" : "string",
+    "description" : "text",
 
-addSetting("width", "number")
-addSetting("height", "number")
+    "width" : "number",
+    "height" : "number",
 
-addSetting("defaultTile", "tile")
+    "baseTile" : "tile"
+}

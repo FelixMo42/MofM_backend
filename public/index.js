@@ -1,3 +1,11 @@
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1)
+}
+
+String.prototype.wordize = function() {
+    return this.split(/(?=[A-Z])/).join(" ").capitalize()
+}
+
 const url = new URL(window.location.href)
 const id = url.searchParams.get("id")
 const type = url.searchParams.get("type")
@@ -31,51 +39,10 @@ function newObject(type) {
     })
 }
 
-async function loadObjects() {
-    for (var type of ["map","player","skill","action","tile","structor","item"]) {
-        let response = await fetch(`/api/${type}`)
-        let objects = await response.json()
-
-        $("#objects").append(`
-            <p style="font: 14px helvetica; margin-bottom: 0px;">${type}</p>
-        `)
-
-        list[type] = {}
-
-        for (let object in objects) {
-            list[type][object] = objects[object]
-
-            $("#objects").append(`
-                <input
-                    type="button"
-                    style="width: 202px; display: block;"
-                    value="${objects[object]}"
-                    onclick="goTo('${type}','${object}')"
-                />
-            `)
-        }
-        
-        $("#objects").append(`
-            <input
-                type='button'
-                style="width: 202px; display: block;"
-                value="add new"
-                onclick="newObject('${type}')"
-            />
-        `)
-    }
-}
-
-function update(key, input) {
+function update(key, value) {
     let keys = key.split(".")
     let name = keys.pop()
     let path = keys.join(".")
-
-    if (input == "checkbox") {
-        value = $(`[name=${key}]`).is(":checked")
-    } else {
-        value = $(`[name=${key}]`).val()
-    }
 
     $.ajax({
         url: `/api/${type}/${id}/${path}`,
@@ -83,72 +50,205 @@ function update(key, input) {
         contentType: "application/json",
         data: JSON.stringify({[name]: value})
     }).done(data => {
-        console.log(data)
+        console.log(`${key} = ${value}`," ; ",data)
     })
+
+    location.reload()
 }
 
-function addSetting(key, type) {
-    let name = key.split(".").pop()
+function get(keys) {
+    let object = data
 
-    if (type == "text" || type == "number" || type == "checkbox") {
-        return $("#settings").append(`
-            <label for=${key}>${name}</label>
-            <input
-                type="${type}"
-                name="${key}"
-                value="${data[key]}"
-                onchange="update('${key}','${type}')"
-            />
-        `)
+    for (let key of keys.split(".")) {
+        object = object[key]
     }
 
-    if (type == "checkbox") {
-        return $("#settings").append(`
-            <label for=${key}>${name}</label>
-            <input
-                type="${type}"
-                name="${key}"
-                value="${data[key]}"
-                onclick="update('${key}','${type}')"
-            />
-        `)
-    }
-
-    return $("#settings").append(`
-        <label for=${key}>${name}</label>
-        <select
-            name="${key}"
-            onchange="update('${key}')"
-            
-        >
-            <option value="">None</option>
-            ${Object.keys(list[type]).map(id => `
-                <option
-                    value="${id}"
-                    ${data[key] == id ? "selected" : ""}
-                >
-                    ${list[type][id]}
-                </option>
-            `).join("")}
-        </select>
-    `)    
+    return object
 }
 
 // load data
 
+async function loadObjects() {
+    $("#objects").append(`
+        <p style="font: 14px helvetica; margin-bottom: 0px;">
+            Settings
+        </p>
+        <div class="object_block">
+            <input
+                type="button"
+                value="Game"
+                onclick="goTo('settings','game')"
+            />
+        </div>
+    `)
+
+    let types = ["map","tile","structor","player","skill","action","item"]
+    for (let type of types) {
+        let response = await fetch(`/api/${type}`)
+        let objects = await response.json()
+
+        list[type] = {}
+
+        
+        $("#objects").append(`
+            <p style="font: 14px helvetica; margin-bottom: 0px;">
+                ${type.capitalize()}
+            </p>
+            <div class="object_block">
+                ${ Object.keys(objects).map(object => {
+                    if (object == "default") { return "" }
+
+                    list[type][parseInt(object)] = objects[object]
+
+                    return `
+                        <input
+                            type="button"
+                            value="${objects[object]}"
+                            onclick="goTo('${type}','${object}')"
+                        />
+                    `
+                }) }
+            </div>
+            <div class="object_block">
+                <input
+                    type='button'
+                    value="default"
+                    onclick="goTo('${type}','default')"
+                />
+                <input
+                    type='button'
+                    value="add new"
+                    onclick="newObject('${type}')"
+                />
+            </div>
+        `)
+    }
+}
+
+function addString(key) {
+    return $('<input>', {
+        type: "text",
+        key: key,
+        val: get(key),
+        change: () => {
+            update(key, $(`[key="${key}"]`).val())
+        }
+    })
+}
+
+function addText(key) {
+    return $('<textarea>', {
+        key: key,
+        val: get(key),
+        change: () => {
+            update(key, $(`[key="${key}"]`).val())
+        }
+    })
+}
+
+function addBool(key) {
+   return $('<input>', {
+        type: "checkbox",
+        key: key,
+        val: get(key),
+        change: () => {
+            update(key, $(`[key="${key}"]`).is(":checked"))
+        }
+    })
+}
+
+function addNum(key) {
+    return $('<input>', {
+        type: "number",
+        key: key,
+        val: get(key),
+        change: () => {
+            update(key, $(`[key="${key}"]`).val())
+        }
+    })
+}
+
+function addArray(key, value) {
+    let element = $("<div>", {
+        class: "settingsArray"
+    })
+
+    for (let i = 0; i < get(key).length; i++) {
+        element.append( addSetting(key + "." + i, value[0]) )
+    }
+
+    element.append($("<input>", {
+        type: "button",
+        value: `add ${value[0]}`,
+        click: () => {
+            let arr = get(key)
+            arr.push({id: -1})
+            update(key, arr)
+        }
+    }))
+
+    return element
+}
+
+function addChooser(key, type) {
+    let element = $("<select>", {
+        key: key,
+        change: () => {
+            let data = JSON.parse($(`[key="${key}"]`).val())
+            update(key, data)
+        }
+    })
+
+    element.append($(`<option>`, {
+        html: "None",
+        value: JSON.stringify(null)
+    }))
+
+    let value = get(key)
+
+    Object.keys(list[type]).forEach(id => element.append($(`<option>`, {
+        html: list[type][id],
+        selected: value !== null && value.id == id,
+        val: JSON.stringify({id: id})
+    })))
+
+    return element
+}
+
+function addSetting(key, type) {
+    if (type == "bool")      { return addBool(key, type)    }
+    if (type == "string")    { return addString(key, type)  }
+    if (type == "text")      { return addText(key, type)    }
+    if (type == "number")    { return addNum(key, type)     }
+    if (Array.isArray(type)) { return addArray(key, type)   }
+    else                     { return addChooser(key, type) }
+}
+
+function loadSettings() {
+    for (var key in config) {
+        $("#settings").append([
+            `<p>${key.wordize()}</p>`,
+            addSetting(key, config[key])
+        ])
+    }
+}
+
 async function loadall() {
-    await loadObjects()
-    fetch(`/data/${type}/${id}.json`)
-        .then(response => response.json())
-        .then(object => {
-            data = object
-            jQuery.ajax({
-                url: `/editors/${type}.js`,
-                dataType: 'script',
-                success: () => {},
-                async: true
-            })
+    await Promise.all([
+        loadObjects(),
+        fetch(`/data/${type}/${id}.json`).then(async response => {
+            data = await response.json()
         })
+    ])
+        
+    jQuery.ajax({
+        url: `/editors/${type}.js`,
+        dataType: 'script',
+        success: () => {
+            loadSettings()
+        },
+        async: true
+    })
 }
 
 loadall()

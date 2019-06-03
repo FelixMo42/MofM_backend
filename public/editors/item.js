@@ -1,7 +1,8 @@
-addSetting("name", "text")
-addSetting("description", "text")
+const config = {
+    "name" : "string",
+    "description" : "text",
 
-addSetting("type", "text")
-
-addSetting("size", "number")
-addSetting("range", "number")
+    "type" : "text",
+    "size" : "number",
+    "range" : "number"
+}

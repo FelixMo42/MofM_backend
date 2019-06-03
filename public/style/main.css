@@ -8,6 +8,40 @@ hr {
     margin: 5px 0px;
 }
 
+/* input stuff */
+
+input[type=button] {
+    border-style: solid;
+}
+
+input[type=button]:hover {
+    border-color: aqua;
+    background-color: aqua;
+}
+
+.selected {
+    border-color: aqua;
+    background-color: aqua;
+    outline: none;
+}
+
+input[type=button]:focus, input[type=button]:disabled:hover {
+    border-color: buttonface;
+    background-color: buttonface;
+}
+
+p {
+    font: 14px helvetica;
+    margin-bottom: 0px;
+}
+
+select {
+    width: 100%;
+    display: block;
+}
+
+/* sections */
+
 .option {
     margin-bottom: 10px;
 }
@@ -33,71 +67,47 @@ hr {
     font-size: 0;
 }
 
-input[type=button] {
-    border-style: solid;
-}
+/* object block in sidebat */
 
-input[type=button][value='add new'] {
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-input[type=button][value=default] {
+.object_block *:first-child {
     margin-top: 5px;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }
 
-#objects input ~ input {
-    /*border-bottom-right-radius: 5px;*/
-    /*border-bottom-left-radius: 5px;*/
-
-    /* background-color: blue */
+.object_block *:last-child {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
-
-input[type=button]:hover {
-    border-color: aqua;
-    background-color: aqua;
-}
-
-#objects p + input {
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-}
-
-
-
-.selected, input[type=button]:focus {
-    border-color: aqua;
-    background-color: aqua;
-    outline: none;
-}
-
-input[type=button]:disabled:hover {
-    border-color: buttonface;
-    background-color: buttonface;
-}
-
-input[type=text], input[type=number] {
-    display: block;
-    width: 200px;
-    margin-bottom: 10px;
-}
-
-label {
-    font: 15px Helvetica;
-    width: 100%;
-}
-
-select {
-    width: 200px;
+.object_block input {
+    width: 202px;
     display: block;
 }
 
-option {
-    width: 200px;
+/* settings */
+
+#settings label {
+    display: block;
+    margin-top: 5px;
 }
+
+#settings textarea {
+    width: 196px;
+
+    resize: vertical;
+}
+
+.settingsArray {
+    padding-left: 6px;
+    border-left: solid white;
+}
+
+.settingsArray input[type=button] {
+    margin: auto;
+}
+
+/* joint buttons */
 
 .leftJointButton {
     box-sizing: border-box;

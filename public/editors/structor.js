@@ -1,2 +1,4 @@
-addSetting("name", "text")
-addSetting("description", "text")
+const config = {
+    "name" : "string",
+    "description" : "text"
+}
