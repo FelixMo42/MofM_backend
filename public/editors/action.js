@@ -3,6 +3,6 @@ const config = {
     "description" : "text",
 
     "range" : "number",
-    "defaultStyle" : "text",
+    "defaultStyle" : "string",
     "defaultSize" : "number"
 }

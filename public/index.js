@@ -182,7 +182,9 @@ function addArray(key, value) {
         value: `add ${value[0]}`,
         click: () => {
             let arr = get(key)
-            arr.push({id: -1})
+            arr.push({
+                id: -1
+            })
             update(key, arr)
         }
     }))
@@ -209,7 +211,7 @@ function addChooser(key, type) {
     Object.keys(list[type]).forEach(id => element.append($(`<option>`, {
         html: list[type][id],
         selected: value !== null && value.id == id,
-        val: JSON.stringify({id: id})
+        val: JSON.stringify({["@class"]: type, id: id})
     })))
 
     return element
