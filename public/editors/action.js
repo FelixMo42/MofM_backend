@@ -3,6 +3,8 @@ const config = {
     "description" : "text",
 
     "range" : "number",
-    "defaultStyle" : "string",
-    "defaultSize" : "number"
+    "defaultStyle" : "style",
+    "defaultSize" : "number",
+
+    "effects" : ["efffect"]
 }
