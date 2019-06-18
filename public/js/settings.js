@@ -3,46 +3,58 @@ const settings = {}
 /// base settings
 
 settings.number = (key) => {
-    return $('<input>', {
+    let element = $('<input>', {
         type: "number",
         key: key,
-        val: get(key),
-        change: () => {
-            update(key, $(`[key="${key}"]`).val())
-        }
+        val: get(key) || 0,
     })
+
+    element.change(() => {
+        update(key, parseInt(element.val()))
+    })
+
+    return element
 }
 
 settings.string = (key) => {
-    return $('<input>', {
+    let element = $('<input>', {
         type: "text",
         key: key,
-        val: get(key),
-        change: () => {
-            update(key, $(`[key="${key}"]`).val())
-        }
+        val: get(key)
     })
+
+    element.change(() => {
+        update(key, element.val())
+    })
+
+    return element
 }
 
 settings.text = (key) => {
-    return $('<textarea>', {
+    let element = $('<textarea>', {
         key: key,
-        val: get(key),
-        change: () => {
-            update(key, $(`[key="${key}"]`).val())
-        }
+        val: get(key)
     })
+
+    element.change(() => {
+        update(key, element.val())
+    })
+
+    return element
 }
 
 settings.bool = (key) => {
-    return $('<input>', {
+    let element = $('<input>', {
         type: "checkbox",
         key: key,
-        val: get(key),
-        change: () => {
-            update(key, $(`[key="${key}"]`).is(":checked"))
-        }
+        val: get(key)
     })
+
+    element.change(() => {
+        update(key, element.is(":checked"))
+    })
+
+    return element
 }
 
 // structors
@@ -61,10 +73,17 @@ settings.array = (key, type) => {
         value: `add ${type[0]}`,
         click: () => {
             let arr = get(key)
-            arr.push({
-                id: -1
-            })
-            update(key, arr)
+
+            let n = addSetting(
+                key + "." + arr.length,
+                type[0]
+            )
+            console.log()
+
+            
+            n.change()
+
+            //update(key, arr)
         }
     }))
 
@@ -144,4 +163,17 @@ settings.style =
         }
 
         return element
+    }
+
+// objects
+
+const objects = {
+    effect: {
+
+    }
+}
+
+settings.effect = 
+    (key, type) => {
+        return settings.object(key, objects[type])
     }
