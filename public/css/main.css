@@ -10,10 +10,6 @@ hr {
 
 /* input stuff */
 
-input {
-    box-sizing: border-box;
-}
-
 input[type=button] {
     border-style: solid;
 }
@@ -112,6 +108,10 @@ select {
 
 .settingsArray:first-child {
     margin-top: 0px;
+}
+
+.settingsArray .add {
+    margin-top: 15px;
 }
 
 .settingsArray input {

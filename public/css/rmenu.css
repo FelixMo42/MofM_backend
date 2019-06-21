@@ -1,0 +1,24 @@
+#rmenu {
+    z-index: 1000;
+    position: absolute;
+    overflow: hidden;
+    border: 1px solid #CCC;
+    white-space: nowrap;
+    font-family: sans-serif;
+    background: #FFF;
+    color: #333;
+    border-radius: 5px;
+    margin: 0px;
+    padding: 0px;
+}
+
+#rmenu li {
+    list-style-type: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: center;
+}
+
+#rmenu li:hover {
+    background-color: #DEF;
+}

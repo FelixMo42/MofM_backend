@@ -67,26 +67,38 @@ settings.array = (key, type) => {
     let element = $("<div>", {
         class: "settingsArray"
     })
+    
+    let menu = rmenu({
+        "delete": () => {
+            console.log("delete")
+        }
+    })
 
     for (let i = 0; i < get(key).length; i++) {
-        element.append( addSetting(key + "." + i, type[0]) )
+        let el = addSetting(key + "." + i, type[0])
+
+        el.contextmenu( menu )
+
+        element.append( el )
     }
 
     element.append($("<input>", {
         type: "button",
-
+        class: "add",
         value: `add ${type[0]}`,
         click: () => {
             let arr = get(key)
 
-            let n = addSetting(
+            let el = addSetting(
                 key + "." + arr.length,
                 type[0]
             )
             
-            n.change()
+            el.change()
 
-            n.insertBefore(element.children().last())
+            el.contextmenu( menu )
+
+            el.insertBefore(element.children().last())
         }
     }))
 
