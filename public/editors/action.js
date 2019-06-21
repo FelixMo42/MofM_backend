@@ -6,5 +6,5 @@ const config = {
     "defaultStyle" : "style",
     "defaultSize" : "number",
 
-    "effects" : ["number"]
+    "effects" : ["effect"]
 }

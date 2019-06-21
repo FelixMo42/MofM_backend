@@ -60,6 +60,9 @@ function get(keys) {
     let object = data
 
     for (let key of keys.split(".")) {
+        if (!(key in object)) {
+            return null
+        }
         object = object[key]
     }
 
@@ -159,12 +162,7 @@ function addSetting(key, type) {
         return settings.object(key, type)
     }
     
-    try {
-        return settings[type](key, type)
-    } catch (error) {
-        console.log(type)
-        console.log(error)
-    }
+    return settings[type](key, type)
 }
 
 function loadSettings() {

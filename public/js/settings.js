@@ -78,19 +78,19 @@ settings.array = (key, type) => {
                 key + "." + arr.length,
                 type[0]
             )
-            console.log()
-
             
             n.change()
-
-            //update(key, arr)
         }
     }))
+
+    element.change(() => {
+        update(key, [])
+    })
 
     return element
 }
 
-settings.object = (key, types) => {
+settings.object = (key, types, def={}) => {
     let element = $("<div>", {
         class: "settingsArray"
     })
@@ -99,6 +99,10 @@ settings.object = (key, types) => {
         element.append( `<p>${type.wordize()}</p>` )
         element.append( addSetting(key + "." + type, types[type]) )
     }
+
+    element.change(() => {
+        update(key, def)
+    })
 
     return element
 }
@@ -154,11 +158,13 @@ settings.style =
 
         let value = get(key)
 
-        for (var style of enums[type]) {
+        for (var i in enums[type]) {
+            let style = enums[type][i]
             element.append($(`<option>`, {
                 html: style,
                 value: style,
-                selected: value === style
+                selected: value === style,
+                default: i === 0
             }))
         }
 
@@ -169,11 +175,17 @@ settings.style =
 
 const objects = {
     effect: {
+        "style": "style"
+    }
+}
 
+const defaults = {
+    effect: {
+        "style": "ball"
     }
 }
 
 settings.effect = 
     (key, type) => {
-        return settings.object(key, objects[type])
+        return settings.object(key, objects[type], defaults[type])
     }
