@@ -9,7 +9,8 @@ settings.number = (key) => {
         val: get(key) || 0,
     })
 
-    element.change(() => {
+    element.change((evt) => {
+        evt.stopPropagation()
         update(key, parseInt(element.val()))
     })
 
@@ -23,7 +24,8 @@ settings.string = (key) => {
         val: get(key)
     })
 
-    element.change(() => {
+    element.change((evt) => {
+        evt.stopPropagation()
         update(key, element.val())
     })
 
@@ -36,7 +38,8 @@ settings.text = (key) => {
         val: get(key)
     })
 
-    element.change(() => {
+    element.change((evt) => {
+        evt.stopPropagation()
         update(key, element.val())
     })
 
@@ -50,7 +53,8 @@ settings.bool = (key) => {
         val: get(key)
     })
 
-    element.change(() => {
+    element.change((evt) => {
+        evt.stopPropagation()
         update(key, element.is(":checked"))
     })
 
@@ -70,6 +74,7 @@ settings.array = (key, type) => {
 
     element.append($("<input>", {
         type: "button",
+
         value: `add ${type[0]}`,
         click: () => {
             let arr = get(key)
@@ -80,10 +85,13 @@ settings.array = (key, type) => {
             )
             
             n.change()
+
+            n.insertBefore(element.children().last())
         }
     }))
 
-    element.change(() => {
+    element.change((evt) => {
+        evt.stopPropagation()
         update(key, [])
     })
 
@@ -92,7 +100,7 @@ settings.array = (key, type) => {
 
 settings.object = (key, types, def={}) => {
     let element = $("<div>", {
-        class: "settingsArray"
+        class: "settingsArray",
     })
 
     for (var type in types) {
@@ -100,7 +108,8 @@ settings.object = (key, types, def={}) => {
         element.append( addSetting(key + "." + type, types[type]) )
     }
 
-    element.change(() => {
+    element.change((evt) => {
+        evt.stopPropagation()
         update(key, def)
     })
 
@@ -118,7 +127,8 @@ settings.item =
     (key, type) => {
         let element = $("<select>", {
             key: key,
-            change: () => {
+            change: (evt) => {
+                evt.stopPropagation()
                 let data = JSON.parse($(`[key="${key}"]`).val())
                 update(key, data)
             }
@@ -143,14 +153,17 @@ settings.item =
 // enums
 
 const enums = {
-    style: ["ball", "self"]
+    style: ["ball", "self"],
+    effectType: ["damage", "knockback"]
 }
 
+settings.effectType =
 settings.style =
     (key, type) => {
         let element = $("<select>", {
             key: key,
-            change: () => {
+            change: (evt) => {
+                evt.stopPropagation()
                 let data = $(`[key="${key}"]`).val()
                 update(key, data)
             }
@@ -175,13 +188,15 @@ settings.style =
 
 const objects = {
     effect: {
-        "style": "style"
+        "style": "style",
+        "type": "effectType"
     }
 }
 
 const defaults = {
     effect: {
-        "style": "ball"
+        "style": "ball",
+        "type": "damage"
     }
 }
 

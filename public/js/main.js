@@ -50,10 +50,8 @@ function update(key, value) {
         contentType: "application/json",
         data: JSON.stringify({[name]: value})
     }).done(data => {
-        console.log(`${key} = ${value}`," ; ",data)
+        console.log(`${key} = ${JSON.stringify(value)}`," ; ",data)
     })
-
-    location.reload()
 }
 
 function get(keys) {
@@ -126,31 +124,6 @@ async function loadObjects() {
             </div>
         `)
     }
-}
-
-function addChooser(key, type) {
-    let element = $("<select>", {
-        key: key,
-        change: () => {
-            let data = JSON.parse($(`[key="${key}"]`).val())
-            update(key, data)
-        }
-    })
-
-    element.append($(`<option>`, {
-        html: "None",
-        value: JSON.stringify(null)
-    }))
-
-    let value = get(key)
-
-    Object.keys(list[type]).forEach(id => element.append($(`<option>`, {
-        html: list[type][id],
-        selected: value !== null && value.id == id,
-        val: JSON.stringify({["@class"]: type, id: id})
-    })))
-
-    return element
 }
 
 function addSetting(key, type) {
