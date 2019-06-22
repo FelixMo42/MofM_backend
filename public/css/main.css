@@ -95,7 +95,6 @@ select {
 }
 
 #settings textarea {
-    box-sizing: border-box;
     width: 100%;
 
     resize: vertical;
@@ -121,19 +120,14 @@ select {
 /* joint buttons */
 
 .leftJointButton {
-    box-sizing: border-box;
-
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
 
-.centerJointButton {
-    box-sizing: border-box;
-}
+/*.centerJointButton {
+}*/
 
 .rightJointButton {
-    box-sizing: border-box;
-
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }

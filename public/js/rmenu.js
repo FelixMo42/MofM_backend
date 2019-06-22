@@ -26,7 +26,7 @@ const rmenu = (items) => {
             })
     
             el.click(() => {
-                items[item]()
+                items[item](event)
 
                 rmenu_menu.hide()
                 rmenu_menu.empty()

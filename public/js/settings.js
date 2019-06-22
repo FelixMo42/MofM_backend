@@ -67,19 +67,22 @@ settings.array = (key, type) => {
     let element = $("<div>", {
         class: "settingsArray"
     })
+
+    let arr = get(key)
     
     let menu = rmenu({
-        "delete": () => {
-            console.log("delete")
+        "delete": ({target}) => {
+            arr.splice( parseInt(target.getAttribute("index")), 1 )
+            update(key, arr)
+            location.reload()
         }
     })
 
-    for (let i = 0; i < get(key).length; i++) {
-        let el = addSetting(key + "." + i, type[0])
-
-        el.contextmenu( menu )
-
-        element.append( el )
+    for (let i = 0; i < arr.length; i++) {
+        addSetting(key + "." + i, type[0])
+            .attr("index", i)
+            .contextmenu( menu )
+            .appendTo( element )
     }
 
     element.append($("<input>", {
@@ -87,18 +90,11 @@ settings.array = (key, type) => {
         class: "add",
         value: `add ${type[0]}`,
         click: () => {
-            let arr = get(key)
-
-            let el = addSetting(
-                key + "." + arr.length,
-                type[0]
-            )
-            
-            el.change()
-
-            el.contextmenu( menu )
-
-            el.insertBefore(element.children().last())
+            addSetting(key + "." + arr.length, type[0])
+                .change()
+                .contextmenu( menu )
+                .attr("index", arr.length)
+                .insertBefore(element.children().last())
         }
     }))
 

@@ -89,7 +89,6 @@ async function loadObjects() {
         let objects = await response.json()
 
         list[type] = {}
-
         
         $("#objects").append(`
             <p style="font: 14px helvetica; margin-bottom: 0px;">
