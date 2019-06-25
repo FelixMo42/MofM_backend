@@ -54,6 +54,17 @@ function update(key, value) {
     })
 }
 
+function derive(sub, key) {
+    if (sub[0] !== "~") {
+        return sub
+    }
+
+    let parts = sub.split(".")
+    let back = parts[0].length
+    
+    return key.split(".").slice(0, -back + 1).join(".") + "." + parts.slice(1).join(".")
+}
+
 function get(keys) {
     let object = data
 

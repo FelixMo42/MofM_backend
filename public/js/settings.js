@@ -50,7 +50,7 @@ settings.bool = (key) => {
     let element = $('<input>', {
         type: "checkbox",
         key: key,
-        val: get(key)
+        checked: get(key)
     })
 
     element.change((evt) => {
@@ -69,10 +69,10 @@ settings.array = (key, type) => {
     })
 
     let arr = get(key)
-    
+
     let menu = rmenu({
         "delete": ({target}) => {
-            arr.splice( parseInt(target.getAttribute("index")), 1 )
+            arr.splice(parseInt(target.getAttribute("index")), 1)
             update(key, arr)
             location.reload()
         }
@@ -106,14 +106,38 @@ settings.array = (key, type) => {
     return element
 }
 
+settings.special = (key, types) => {
+    if ("@type" in types) {
+        return addSetting(key, types["@type"])
+    }
+    
+    if ("@if" in types) {
+        let value = get( derive(types["@if"].key, key) )
+        if (value in types["@if"].values) {
+            return addSetting(key, types["@if"].values[value])
+        } else {
+            return false
+        }
+    }
+}
+
 settings.object = (key, types, def={}) => {
+    if ("@" in types) {
+        return settings.special(key, types)
+    }
+
     let element = $("<div>", {
         class: "settingsArray",
     })
 
     for (var type in types) {
-        element.append( `<p>${type.wordize()}</p>` )
-        element.append( addSetting(key + "." + type, types[type]) )
+        if ( addSetting(key + "." + type, types[type]) ) {
+            let el = addSetting(key + "." + type, types[type])
+            if ( el ) {
+                element.append( `<p>${type.wordize()}</p>` )
+                element.append( el )
+            }
+        }
     }
 
     element.change((evt) => {
@@ -147,6 +171,7 @@ settings.item =
             value: JSON.stringify(null)
         }))
     
+        console.log( key.splice(".") )
         let value = get(key)
     
         Object.keys(list[type]).forEach(id => element.append($(`<option>`, {
@@ -197,13 +222,33 @@ settings.style =
 const objects = {
     effect: {
         "style": "style",
-        "type": "effectType"
+
+        "targetPlayer": "bool",
+        "targetTile": "bool",
+        "targetStructor": "bool",
+        "targetItem": "bool",
+
+        "type": "effectType",
+        "value": {
+            "@": true,
+            "@if": {
+                "key": "~~.type",
+                "values": {
+                    "damage": "number",
+                    //"knockback": "number"
+                }
+            }
+        }
     }
 }
 
 const defaults = {
     effect: {
         "style": "ball",
+        "targetPlayer": true,
+        "targetTile": true,
+        "targetStructor": true,
+        "targetItem": true,
         "type": "damage"
     }
 }
