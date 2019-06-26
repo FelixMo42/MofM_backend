@@ -69,6 +69,9 @@ settings.array = (key, type) => {
     })
 
     let arr = get(key)
+    if (arr === null) {
+        console.log(key)
+    }
 
     let menu = rmenu({
         "delete": ({target}) => {
@@ -81,8 +84,8 @@ settings.array = (key, type) => {
     for (let i = 0; i < arr.length; i++) {
         addSetting(key + "." + i, type[0])
             .attr("index", i)
-            .contextmenu( menu )
-            .appendTo( element )
+            .contextmenu(menu)
+            .appendTo(element)
     }
 
     element.append($("<input>", {
@@ -92,7 +95,7 @@ settings.array = (key, type) => {
         click: () => {
             addSetting(key + "." + arr.length, type[0])
                 .change()
-                .contextmenu( menu )
+                .contextmenu(menu)
                 .attr("index", arr.length)
                 .insertBefore(element.children().last())
         }
@@ -104,21 +107,6 @@ settings.array = (key, type) => {
     })
 
     return element
-}
-
-settings.special = (key, types) => {
-    if ("@type" in types) {
-        return addSetting(key, types["@type"])
-    }
-    
-    if ("@if" in types) {
-        let value = get( derive(types["@if"].key, key) )
-        if (value in types["@if"].values) {
-            return addSetting(key, types["@if"].values[value])
-        } else {
-            return false
-        }
-    }
 }
 
 settings.object = (key, types, def={}) => {
@@ -148,11 +136,43 @@ settings.object = (key, types, def={}) => {
     return element
 }
 
+settings.special = (key, types, def) => {
+    if (types["@"] === "if") {
+        let value = get( derive(types.key, key) )
+
+        if (value in types.values) {
+            return addSetting(key, types.values[value], def)
+        } else {
+            return false
+        }
+    }
+    if (types["@"] === "select") {
+        let type = get(key + "." + "type")
+
+        return settings.object(
+            key,
+            {
+                "type": {
+                    "@": "enum",
+                    "values": Object.keys(types["type"])
+                },
+                ...types["type"][type],
+                ...types["base"],
+            },
+            def
+        )
+    }
+    if (types["@"] === "enum") {
+        return settings.enum(key, types["values"])
+    }
+}
+
 // game classes
 
 settings.player = 
 settings.map =
 settings.action =
+settings.skill =
 settings.tile =
 settings.structor =
 settings.item =
@@ -171,7 +191,6 @@ settings.item =
             value: JSON.stringify(null)
         }))
     
-        console.log( key.splice(".") )
         let value = get(key)
     
         Object.keys(list[type]).forEach(id => element.append($(`<option>`, {
@@ -186,12 +205,10 @@ settings.item =
 // enums
 
 const enums = {
-    style: ["ball", "self"],
-    effectType: ["damage", "knockback"]
+    effectType: ["damage", "knockback", "pull", "pick up"]
 }
 
-settings.effectType =
-settings.style =
+settings.enum = 
     (key, type) => {
         let element = $("<select>", {
             key: key,
@@ -204,8 +221,8 @@ settings.style =
 
         let value = get(key)
 
-        for (var i in enums[type]) {
-            let style = enums[type][i]
+        for (var i in type) {
+            let style = type[i]
             element.append($(`<option>`, {
                 html: style,
                 value: style,
@@ -217,42 +234,56 @@ settings.style =
         return element
     }
 
+settings.effectType =
+settings.style =
+    (key, type) => {
+        return settings.enum(key, enums[type])
+    }
+
 // objects
 
 const objects = {
     effect: {
-        "style": "style",
-
-        "targetPlayer": "bool",
-        "targetTile": "bool",
-        "targetStructor": "bool",
-        "targetItem": "bool",
-
-        "type": "effectType",
-        "value": {
-            "@": true,
-            "@if": {
-                "key": "~~.type",
-                "values": {
-                    "damage": "number",
-                    //"knockback": "number"
-                }
-            }
+        "@": "select",
+        "type": {
+            "damage" : {
+                "value": "number"
+            },
+            "push" : {
+                "value": "string"
+            },
+            "none": {},
+            "inherit": {}
+        },
+        "base": {
+            "roll": "number",
+            "subEffects": ["effect"]
         }
+    },
+    style: {
+        "@": "select",
+        type: {
+            ball : {
+                radius: "number"
+            },
+            beam : {
+                width: "string"
+            },
+            self: {},
+            custom: {},
+            inherit: {}
+        },
+        base: {}
     }
 }
 
 const defaults = {
     effect: {
-        "style": "ball",
-        "targetPlayer": true,
-        "targetTile": true,
-        "targetStructor": true,
-        "targetItem": true,
-        "type": "damage"
+        "subEffect": []
     }
 }
 
+settings.style = 
 settings.effect = 
     (key, type) => {
         return settings.object(key, objects[type], defaults[type])

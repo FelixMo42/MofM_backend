@@ -144,7 +144,7 @@ function addSetting(key, type) {
     if (typeof type === 'object') {
         return settings.object(key, type)
     }
-    
+
     return settings[type](key, type)
 }
 

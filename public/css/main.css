@@ -42,11 +42,15 @@ select {
 
 /* sections */
 
+#root {
+    flex: 1
+}
+
 .option {
     margin-bottom: 10px;
 }
 
-.grid {
+body, .grid {
     display: flex;
 }
 
@@ -105,12 +109,12 @@ select {
     border-left: solid white;
 }
 
-.settingsArray:first-child {
-    margin-top: 0px;
-}
-
 .settingsArray .add {
     margin-top: 15px;
+}
+
+.settingsArray *:first-child {
+    margin-top: 0px;
 }
 
 .settingsArray input {
