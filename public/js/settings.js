@@ -70,6 +70,8 @@ settings.array = (key, type) => {
 
     let arr = get(key)
     if (arr === null) {
+        console.log("* " + key)
+    } else {
         console.log(key)
     }
 
@@ -119,11 +121,16 @@ settings.object = (key, types, def={}) => {
     })
 
     for (var type in types) {
-        if ( addSetting(key + "." + type, types[type]) ) {
-            let el = addSetting(key + "." + type, types[type])
+        let el = addSetting(key + "." + type, types[type])
+        if ( el ) {
             if ( el ) {
-                element.append( `<p>${type.wordize()}</p>` )
-                element.append( el )
+                element.append([
+                    $(`<p>${type.wordize()}</p>`).click((event) => {
+                        $(el).toggle()
+                        $(event.target).toggleClass("folded")
+                    }),
+                    el
+                ])
             }
         }
     }
@@ -245,33 +252,70 @@ settings.style =
 const objects = {
     effect: {
         "@": "select",
-        "type": {
-            "damage" : {
-                "value": "number"
+        type: {
+            damage : {
+                value: "number"
             },
-            "push" : {
-                "value": "string"
+            push : {
+                value: "string"
             },
-            "none": {},
-            "inherit": {}
+            none: {},
+            inherit: {}
         },
-        "base": {
-            "roll": "number",
-            "subEffects": ["effect"]
+        base: {
+            roll: "roll",
+            style: "style",
+            subEffects: ["effect"]
         }
     },
     style: {
         "@": "select",
         type: {
-            ball : {
+            ball: {
+                radius: "number",
+                targetPlayer: "bool",
+                targetItem: "bool",
+                targetTile: "bool",
+                targetStructor: "bool"
+            },
+            beam: {
+                width: "string",
+                targetPlayer: "bool",
+                targetItem: "bool",
+                targetTile: "bool",
+                targetStructor: "bool"
+            },
+            self: {
+                targetPlayer: "bool",
+                targetItem: "bool",
+                targetTile: "bool",
+                targetStructor: "bool"
+            },
+            custom: {
+                targetPlayer: "bool",
+                targetItem: "bool",
+                targetTile: "bool",
+                targetStructor: "bool"
+            },
+            inherit: {}
+        },
+        base: {}
+    },
+    area: {
+        "@": "select",
+        type: {
+            ball: {
                 radius: "number"
             },
-            beam : {
-                width: "string"
-            },
-            self: {},
-            custom: {},
-            inherit: {}
+            custom: {}
+        },
+        base: {}
+    },
+    roll: {
+        "@": "select",
+        type: {
+            inherit: {},
+            reroll: {}
         },
         base: {}
     }
@@ -279,12 +323,20 @@ const objects = {
 
 const defaults = {
     effect: {
-        "subEffect": []
+        roll: {
+            type: "inherit"
+        },
+        style: {
+            type: "inherit"
+        },
+        subEffects: []
     }
 }
 
+settings.roll = 
+settings.area = 
 settings.style = 
 settings.effect = 
     (key, type) => {
-        return settings.object(key, objects[type], defaults[type])
+        return settings.object(key, objects[type], defaults[type] || {})
     }

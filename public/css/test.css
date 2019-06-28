@@ -1,0 +1,17 @@
+#settings {
+    padding: var(--theme-spacing);
+}
+
+#settings input,
+#settings textarea,
+#settings select {
+    width: 100%;
+
+    margin-bottom: var(--theme-spacing);
+}
+
+.settingsList {
+    padding-left: 5px;
+    border-left: solid var(--theme-disabled-text);
+    margin-bottom: var(--theme-spacing);
+}

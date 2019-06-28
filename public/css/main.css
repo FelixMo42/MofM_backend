@@ -1,13 +1,3 @@
-body {
-    background-color: #323232;
-    color: white;
-    margin: 0px;
-}
-
-hr {
-    margin: 5px 0px;
-}
-
 /* input stuff */
 
 input[type=button] {
@@ -119,6 +109,10 @@ body, .grid {
 
 .settingsArray input {
     width: 100%;
+}
+
+.folded {
+    text-decoration: underline;
 }
 
 /* joint buttons */

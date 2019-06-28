@@ -150,10 +150,18 @@ function addSetting(key, type) {
 
 function loadSettings() {
     for (var key in config) {
-        $("#settings").append([
-            `<p>${key.wordize()}</p>`,
-            addSetting(key, config[key])
-        ])
+        let el = addSetting(key, config[key])
+        if ( el ) {
+            if ( el ) {
+                $("#settings").append([ 
+                    $(`<p>${key.wordize()}</p>`).click((event) => {
+                        $(el).toggle()
+                        $(event.target).toggleClass("folded")
+                    }),
+                    el
+                ])
+            }
+        }
     }
 }
 

@@ -1,8 +1,10 @@
 const config = {
-    "name" : "string",
-    "description" : "text",
+    name : "string",
+    description : "text",
 
-    "defaultStyle" : "style",
+    area: "area",
 
-    "effects" : ["effect"]
+    defaultStyle : "style",
+
+    effects : ["effect"]
 }
